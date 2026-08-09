@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "mouse_boat_steering",
+  "version": "${version}",
+  "name": "Mouse Boat Steering",
+  "description": "Steer boats and rafts with the mouse while keeping forward and backward movement on the keyboard.",
+  "authors": [
+    "Mouse Boat Steering contributors"
+  ],
+  "license": "MIT",
+  "environment": "client",
+  "mixins": [
+    {
+      "config": "mouse-boat-steering.mixins.json",
+      "environment": "client"
+    }
+  ],
+  "depends": {
+    "fabricloader": ">=0.19.3",
+    "minecraft": "~26.2",
+    "java": ">=25"
+  }
+}
