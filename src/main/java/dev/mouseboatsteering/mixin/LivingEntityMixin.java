@@ -18,9 +18,18 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Mixin(LivingEntity.class)
 abstract class LivingEntityMixin {
+    @Unique
+    private static final Logger MOUSE_BOAT_STEERING$LOGGER =
+            LoggerFactory.getLogger("mouse_boat_steering");
+
+    @Unique
+    private static boolean mouseBoatSteering$loggedFrostWalkerRuntime;
+
     @Unique
     private long mouseBoatSteering$lastFreezeCenter = Long.MIN_VALUE;
 
@@ -44,7 +53,18 @@ abstract class LivingEntityMixin {
                 .lookupOrThrow(Registries.ENCHANTMENT)
                 .getOrThrow(Enchantments.FROST_WALKER);
         int enchantmentLevel = EnchantmentHelper.getItemEnchantmentLevel(frostWalker, boots);
+        if (enchantmentLevel > 0 && !mouseBoatSteering$loggedFrostWalkerRuntime) {
+            mouseBoatSteering$loggedFrostWalkerRuntime = true;
+            MOUSE_BOAT_STEERING$LOGGER.info(
+                    "Frost Walker+ runtime active: detected level {}, minimum level {}, maximum level {}",
+                    enchantmentLevel,
+                    frostWalker.value().getMinLevel(),
+                    frostWalker.value().getMaxLevel()
+            );
+        }
+
         Block ice = switch (enchantmentLevel) {
+            case 1 -> Blocks.FROSTED_ICE;
             case 2 -> Blocks.ICE;
             case 3 -> Blocks.PACKED_ICE;
             case 4 -> Blocks.BLUE_ICE;
@@ -53,6 +73,11 @@ abstract class LivingEntityMixin {
 
         if (ice == null) {
             mouseBoatSteering$lastFrostWalkerLevel = enchantmentLevel;
+            return;
+        }
+
+        boolean requireOriginalConditions = enchantmentLevel == 1;
+        if (requireOriginalConditions && (!entity.onGround() || entity.isPassenger())) {
             return;
         }
 
@@ -65,11 +90,23 @@ abstract class LivingEntityMixin {
 
         mouseBoatSteering$lastFreezeCenter = packedCenter;
         mouseBoatSteering$lastFrostWalkerLevel = enchantmentLevel;
-        freezeWaterDisk(level, center, ice.defaultBlockState(), enchantmentLevel + 2);
+        freezeWaterDisk(
+                level,
+                center,
+                ice.defaultBlockState(),
+                enchantmentLevel + 2,
+                requireOriginalConditions
+        );
     }
 
     @Unique
-    private static void freezeWaterDisk(ServerLevel level, BlockPos center, BlockState ice, int radius) {
+    private static void freezeWaterDisk(
+            ServerLevel level,
+            BlockPos center,
+            BlockState ice,
+            int radius,
+            boolean requireAirAbove
+    ) {
         int radiusSquared = radius * radius;
 
         for (BlockPos position : BlockPos.betweenClosed(
@@ -82,7 +119,8 @@ abstract class LivingEntityMixin {
                 continue;
             }
 
-            if (level.getBlockState(position).is(Blocks.WATER)) {
+            if (level.getBlockState(position).is(Blocks.WATER)
+                    && (!requireAirAbove || level.getBlockState(position.above()).isAir())) {
                 level.setBlockAndUpdate(position, ice);
             }
         }
