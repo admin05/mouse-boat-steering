@@ -2,6 +2,9 @@
   "required": true,
   "package": "dev.mouseboatsteering.mixin",
   "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "LivingEntityMixin"
+  ],
   "client": [
     "LocalPlayerMixin"
   ],

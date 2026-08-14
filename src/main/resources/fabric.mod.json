@@ -10,10 +10,7 @@
   "license": "MIT",
   "environment": "*",
   "mixins": [
-    {
-      "config": "mouse-boat-steering.mixins.json",
-      "environment": "client"
-    }
+    "mouse-boat-steering.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.19.2",
