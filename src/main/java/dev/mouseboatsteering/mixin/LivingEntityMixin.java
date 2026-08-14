@@ -36,8 +36,11 @@ abstract class LivingEntityMixin {
     @Unique
     private int mouseBoatSteering$lastFrostWalkerLevel;
 
+    @Unique
+    private boolean mouseBoatSteering$placedIceForCurrentJump;
+
     @Inject(method = "tick", at = @At("TAIL"))
-    private void mouseBoatSteering$freezeWaterForHigherLevels(CallbackInfo callbackInfo) {
+    private void mouseBoatSteering$applyFrostWalkerLevels(CallbackInfo callbackInfo) {
         LivingEntity entity = (LivingEntity) (Object) this;
         if (!(entity.level() instanceof ServerLevel level)) {
             return;
@@ -81,6 +84,10 @@ abstract class LivingEntityMixin {
             return;
         }
 
+        if (enchantmentLevel >= 2) {
+            placeIceForJumpStep(level, entity, ice.defaultBlockState());
+        }
+
         BlockPos center = entity.blockPosition().below();
         long packedCenter = center.asLong();
         if (packedCenter == mouseBoatSteering$lastFreezeCenter
@@ -90,22 +97,43 @@ abstract class LivingEntityMixin {
 
         mouseBoatSteering$lastFreezeCenter = packedCenter;
         mouseBoatSteering$lastFrostWalkerLevel = enchantmentLevel;
-        freezeWaterDisk(
+        createIceDisk(
                 level,
                 center,
                 ice.defaultBlockState(),
                 enchantmentLevel + 2,
-                requireOriginalConditions
+                enchantmentLevel >= 2
         );
     }
 
     @Unique
-    private static void freezeWaterDisk(
+    private void placeIceForJumpStep(ServerLevel level, LivingEntity entity, BlockState ice) {
+        if (entity.onGround()) {
+            mouseBoatSteering$placedIceForCurrentJump = false;
+            return;
+        }
+
+        if (mouseBoatSteering$placedIceForCurrentJump || entity.getDeltaMovement().y <= 0.0) {
+            return;
+        }
+
+        BlockPos stepPosition = entity.blockPosition();
+        if (!canReplaceWithIce(level, stepPosition, ice, true)) {
+            return;
+        }
+
+        level.setBlockAndUpdate(stepPosition, ice);
+        mouseBoatSteering$placedIceForCurrentJump = true;
+        entity.teleportTo(entity.getX(), stepPosition.getY() + 1.0, entity.getZ());
+    }
+
+    @Unique
+    private static void createIceDisk(
             ServerLevel level,
             BlockPos center,
             BlockState ice,
             int radius,
-            boolean requireAirAbove
+            boolean replaceOrdinaryBlocks
     ) {
         int radiusSquared = radius * radius;
 
@@ -119,10 +147,32 @@ abstract class LivingEntityMixin {
                 continue;
             }
 
-            if (level.getBlockState(position).is(Blocks.WATER)
-                    && (!requireAirAbove || level.getBlockState(position.above()).isAir())) {
+            if (canReplaceWithIce(level, position, ice, replaceOrdinaryBlocks)
+                    && (replaceOrdinaryBlocks || level.getBlockState(position.above()).isAir())) {
                 level.setBlockAndUpdate(position, ice);
             }
         }
+    }
+
+    @Unique
+    private static boolean canReplaceWithIce(
+            ServerLevel level,
+            BlockPos position,
+            BlockState ice,
+            boolean replaceOrdinaryBlocks
+    ) {
+        BlockState state = level.getBlockState(position);
+        if (!replaceOrdinaryBlocks) {
+            return state.is(Blocks.WATER);
+        }
+
+        return !state.is(ice.getBlock())
+                && !state.is(Blocks.BEDROCK)
+                && !state.is(Blocks.BARRIER)
+                && !state.is(Blocks.NETHER_PORTAL)
+                && !state.is(Blocks.END_PORTAL)
+                && !state.is(Blocks.END_PORTAL_FRAME)
+                && !state.is(Blocks.END_GATEWAY)
+                && level.getBlockEntity(position) == null;
     }
 }
