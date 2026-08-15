@@ -7,7 +7,11 @@
     "LivingEntityMixin"
   ],
   "client": [
-    "LocalPlayerMixin"
+    "LocalPlayerMixin",
+    "KeyboardHandlerMixin"
+  ],
+  "server": [
+    "ServerGamePacketListenerMixin"
   ],
   "injectors": {
     "defaultRequire": 1
