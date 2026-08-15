@@ -3,7 +3,8 @@
   "package": "dev.serverlatencydisplay.mixin",
   "compatibilityLevel": "JAVA_21",
   "server": [
-    "MinecraftServerMixin"
+    "MinecraftServerMixin",
+    "ServerPlayerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

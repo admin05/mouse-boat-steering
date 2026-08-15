@@ -15,12 +15,12 @@ abstract class MinecraftServerMixin {
     private int serverLatencyDisplay$ticksUntilUpdate = ServerLatencyDisplay.UPDATE_INTERVAL_TICKS;
 
     @Inject(method = "tickServer", at = @At("TAIL"))
-    private void serverLatencyDisplay$showLatency(BooleanSupplier hasTimeLeft, CallbackInfo callbackInfo) {
+    private void serverLatencyDisplay$updateTabList(BooleanSupplier hasTimeLeft, CallbackInfo callbackInfo) {
         if (--serverLatencyDisplay$ticksUntilUpdate > 0) {
             return;
         }
 
         serverLatencyDisplay$ticksUntilUpdate = ServerLatencyDisplay.UPDATE_INTERVAL_TICKS;
-        ServerLatencyDisplay.showLatency((MinecraftServer) (Object) this);
+        ServerLatencyDisplay.updateTabList((MinecraftServer) (Object) this);
     }
 }
