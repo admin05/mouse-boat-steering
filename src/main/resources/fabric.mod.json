@@ -1,24 +1,21 @@
 {
   "schemaVersion": 1,
-  "id": "mouse_boat_steering",
+  "id": "server_latency_display",
   "version": "${version}",
-  "name": "Mouse Boat Steering & Frost Walker+",
-  "description": "Steer boats with the mouse and extend Frost Walker to four levels with higher-tier ice blocks.",
+  "name": "Server Latency Display",
+  "description": "Displays each player's server latency in the action bar.",
   "authors": [
-    "Mouse Boat Steering contributors"
+    "Server Latency Display contributors"
   ],
   "license": "MIT",
-  "environment": "*",
+  "environment": "server",
   "entrypoints": {
     "main": [
-      "dev.mouseboatsteering.MouseBoatSteering"
-    ],
-    "client": [
-      "dev.mouseboatsteering.MouseBoatSteeringClient"
+      "dev.serverlatencydisplay.ServerLatencyDisplay"
     ]
   },
   "mixins": [
-    "mouse-boat-steering.mixins.json"
+    "server-latency-display.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.19.2",

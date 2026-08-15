@@ -9,4 +9,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = "mouse-boat-steering"
+rootProject.name = "server-latency-display"
