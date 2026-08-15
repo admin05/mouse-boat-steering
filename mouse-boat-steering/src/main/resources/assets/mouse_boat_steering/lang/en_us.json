@@ -1,0 +1,6 @@
+{
+  "key.mouse_boat_steering.toggle_frost_walker": "Toggle Frost Walker ice generation",
+  "message.mouse_boat_steering.hold_frost_walker_boots": "Hold Frost Walker boots to toggle ice generation",
+  "message.mouse_boat_steering.ice_disabled": "Frost Walker ice generation: OFF",
+  "message.mouse_boat_steering.ice_enabled": "Frost Walker ice generation: ON"
+}

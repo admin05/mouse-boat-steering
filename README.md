@@ -1,21 +1,36 @@
-# 服务器延迟显示
+# Minecraft 1.21.11 Fabric 模组
 
-适用于 Minecraft Java Edition 1.21.11 + Fabric 的纯服务端模组。
+本仓库同时保留两个互相独立的 Fabric 模组，均适用于 Minecraft Java Edition 1.21.11，且不依赖 Fabric API。
 
-## 功能
+## 鼠标划船与冰霜行者增强
+
+成品：`mouse-boat-steering-1.3.0.jar`
+
+- 鼠标左右移动控制船头方向，`W`、`S` 仍负责前进和后退。
+- 冰霜行者 I 级保留原版效果。
+- 冰霜行者 II–IV 级分别生成 `3×3` 普通冰、浮冰和蓝冰道路。
+- II–IV 级可在任何地方替换普通方块或空气，并支持连续跳跃向上搭建。
+- 手持带冰霜行者附魔的鞋子按 `C` 可关闭或重新开启生冰。
+
+单人游戏安装在客户端；多人游戏的客户端和服务器都需要安装。
+
+## 服务器延迟显示
+
+成品：`server-latency-display-1.0.0.jar`
 
 - 每秒在玩家屏幕下方的操作栏显示该玩家与服务器之间的当前延迟。
 - 延迟低于 `100 ms` 显示为绿色。
 - 延迟在 `100-199 ms` 显示为黄色。
 - 延迟达到 `200 ms` 或以上显示为红色。
 - 玩家客户端不需要安装本模组。
-- 不依赖 Fabric API。
+
+只需安装在服务器，玩家客户端不需要安装。
 
 ## 安装
 
-1. 在 Minecraft 1.21.11 服务端安装 Fabric Loader。
-2. 将 `server-latency-display-1.0.0.jar` 放入服务端的 `mods` 目录。
-3. 启动服务器。
+1. 安装适用于 Minecraft 1.21.11 的 Fabric Loader。
+2. 根据需要选择一个或两个 JAR 放入对应的 `mods` 目录。
+3. 不需要安装 Fabric API。
 
 ## 构建
 
@@ -25,4 +40,9 @@
 ./gradlew build
 ```
 
-成品位于 `build/libs/`。
+两个模组会同时构建，成品分别位于：
+
+- `mouse-boat-steering/build/libs/`
+- `server-latency-display/build/libs/`
+
+可直接安装的两个最终 JAR 也保留在仓库最外层。

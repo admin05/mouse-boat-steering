@@ -1,0 +1,19 @@
+{
+  "required": true,
+  "package": "dev.mouseboatsteering.mixin",
+  "compatibilityLevel": "JAVA_21",
+  "mixins": [
+    "EnchantmentMixin",
+    "LivingEntityMixin"
+  ],
+  "client": [
+    "LocalPlayerMixin",
+    "KeyboardHandlerMixin"
+  ],
+  "server": [
+    "ServerGamePacketListenerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

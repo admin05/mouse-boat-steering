@@ -9,4 +9,7 @@ pluginManagement {
     }
 }
 
-rootProject.name = "server-latency-display"
+rootProject.name = "fabric-server-mods"
+
+include "mouse-boat-steering"
+include "server-latency-display"
