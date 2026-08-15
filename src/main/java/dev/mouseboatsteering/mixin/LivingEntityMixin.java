@@ -1,5 +1,6 @@
 package dev.mouseboatsteering.mixin;
 
+import dev.mouseboatsteering.FrostWalkerControl;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
@@ -43,6 +44,13 @@ abstract class LivingEntityMixin {
     private void mouseBoatSteering$applyFrostWalkerLevels(CallbackInfo callbackInfo) {
         LivingEntity entity = (LivingEntity) (Object) this;
         if (!(entity.level() instanceof ServerLevel level)) {
+            return;
+        }
+
+        if (!FrostWalkerControl.isIceGenerationEnabled(entity)) {
+            mouseBoatSteering$lastFreezeCenter = Long.MIN_VALUE;
+            mouseBoatSteering$lastFrostWalkerLevel = 0;
+            mouseBoatSteering$placedIceForCurrentJump = false;
             return;
         }
 
@@ -101,7 +109,7 @@ abstract class LivingEntityMixin {
                 level,
                 center,
                 ice.defaultBlockState(),
-                enchantmentLevel + 2,
+                enchantmentLevel >= 2 ? 1 : 3,
                 enchantmentLevel >= 2
         );
     }
@@ -143,7 +151,7 @@ abstract class LivingEntityMixin {
         )) {
             int deltaX = position.getX() - center.getX();
             int deltaZ = position.getZ() - center.getZ();
-            if (deltaX * deltaX + deltaZ * deltaZ > radiusSquared) {
+            if (!replaceOrdinaryBlocks && deltaX * deltaX + deltaZ * deltaZ > radiusSquared) {
                 continue;
             }
 

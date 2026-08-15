@@ -9,11 +9,20 @@
   ],
   "license": "MIT",
   "environment": "*",
+  "entrypoints": {
+    "main": [
+      "dev.mouseboatsteering.MouseBoatSteering"
+    ],
+    "client": [
+      "dev.mouseboatsteering.MouseBoatSteeringClient"
+    ]
+  },
   "mixins": [
     "mouse-boat-steering.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=0.19.2",
+    "fabric-api": ">=0.141.3",
     "minecraft": "~1.21.11",
     "java": ">=21"
   }
