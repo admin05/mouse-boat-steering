@@ -15,13 +15,14 @@ abstract class ServerGamePacketListenerMixin {
     @Shadow
     public net.minecraft.server.level.ServerPlayer player;
 
-    @Inject(method = "handleCustomPayload", at = @At("HEAD"))
+    @Inject(method = "handleCustomPayload", at = @At("HEAD"), cancellable = true)
     private void mouseBoatSteering$handleTogglePacket(
             ServerboundCustomPayloadPacket packet,
             CallbackInfo callbackInfo
     ) {
         if (packet.payload().type().id().equals(ToggleFrostWalkerPayload.TYPE.id())) {
             FrostWalkerControl.toggle(player);
+            callbackInfo.cancel();
         }
     }
 }
